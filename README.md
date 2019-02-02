@@ -5,7 +5,7 @@ About
 
 This is Gradle plugin for compiling(transpiling) Java bytecode to JavaScript using [TeaVM](http://teavm.org/). Plugin uses TeaVMTool for compilation. Plugin is written in [Kotlin](http://kotlinlang.org/) and depends on `kotlin-stdlib`. Project that uses plugin will depend on `teavm-classlib`, `teavm-jso` and `teavm-jso-apis`. All dependencies can be acquired from Maven Central repo.
 
-Plugin is tested with Java 6 and Kotlin but it should be able to transpile other JVM outputs too.
+Plugin is tested with Java 11 and Kotlin but it should be able to transpile other JVM outputs too.
 
 Quick Start
 ===========
@@ -16,14 +16,15 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "https://jitpack.io" }
+        maven { url 'https://dl.bintray.com/konsoletyper/teavm' }
     }
 
     dependencies {
-        classpath 'com.edibleday:teavm-gradle-plugin:VERSION'
+        classpath 'com.seeseemelk:teavm-gradle-plugin:VERSION'
     }
 }
 ```
-Replace VERSION with actual version of plugin. See [releases](https://github.com/edibleday/teavm-gradle-plugin/releases) for version list.
+Replace VERSION with actual version of plugin. See [releases](https://github.com/seeseemelk/teavm-gradle-plugin/releases) for version list.
 
 You can also use git commit hash as version. Check [JitPack](https://jitpack.io/#com.edibleday/teavm-gradle-plugin) for list of hashes and build status.
 
@@ -36,6 +37,7 @@ Add repositories for TeaVM dependencies
 ```
 repositories {
     mavenCentral()
+	maven { url 'https://dl.bintray.com/konsoletyper/teavm' }
 }
 ```
 
@@ -59,12 +61,12 @@ teavmc { //Optional configuration block
     generateSourceMap false
     /* Minify javascript */
     minified true
-    /* Runtime javascript inclusion
-        NONE: don't include runtime
-        MERGED: merge runtime into main javascript file
-        SEPARATE: include runtime as separated file
-     */
-    runtime org.teavm.tooling.RuntimeCopyOperation.SEPARATE
+    /* Target type
+        'javascript': Javascript (default)
+        'webassembly': WebAssembly
+        'c': C
+    */
+    targetType 'javascript'
 }
 ```
 

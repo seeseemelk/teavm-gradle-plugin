@@ -5,29 +5,35 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.1-2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20'
     }
 }
 
+ext {
+    teavmVersion = '0.6.0-dev-665'
+}
 
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
-sourceCompatibility = JavaVersion.VERSION_1_6
-version = '0.4.3.3-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_1_8
+version = '0.5.0-SNAPSHOT'
 group = "com.edibleday"
 
 repositories {
     mavenCentral()
+    maven { url 'https://dl.bintray.com/konsoletyper/teavm' }
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile 'org.teavm:teavm-core:0.4.3'
-    compile 'org.teavm:teavm-tooling:0.4.3'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.1-2'
-    compile 'org.apache.maven:maven-plugin-api:3.3.3'
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation "org.teavm:teavm-core:${teavmVersion}"
+    implementation "org.teavm:teavm-tooling:${teavmVersion}"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.20'
+    implementation 'org.apache.maven:maven-plugin-api:3.6.0'
 }
 
 task sourceJar(type: Jar) {

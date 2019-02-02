@@ -6,3 +6,10 @@ build/
 .idea/
 *.iml
 
+# Build directories
+/build/
+/bin/
+
+# Hidden files
+.*
+!.gitignore
