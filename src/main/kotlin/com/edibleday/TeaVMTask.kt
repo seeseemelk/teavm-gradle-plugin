@@ -24,8 +24,12 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskAction
 import org.teavm.tooling.TeaVMTargetType
 import org.teavm.tooling.TeaVMTool
+import org.teavm.tooling.ConsoleTeaVMToolLog
 import org.teavm.tooling.sources.DirectorySourceFileProvider
 import org.teavm.tooling.sources.JarSourceFileProvider
+import org.teavm.diagnostics.Problem;
+import org.teavm.diagnostics.ProblemProvider;
+import org.teavm.diagnostics.DefaultProblemTextConsumer;
 import java.io.File
 import java.io.IOException
 import java.net.MalformedURLException
@@ -97,15 +101,39 @@ open class TeaVMTask : DefaultTask() {
 		try {
 			tool.classLoader = classLoader
 			tool.generate()
+			
+			val problemProvider = tool.getProblemProvider();
+			if (problemProvider != null && !problemProvider.getProblems().isEmpty())
+			{
+				log.error("=== Problems ===");
+				for (problem in problemProvider.getProblems())
+				{
+					if (!problemProvider.getSevereProblems().contains(problem))
+						printProblem(problem);
+				}
+				
+				log.error("=== Severe problems ===");
+				for (problem in problemProvider.getSevereProblems())
+					printProblem(problem);
+				
+				throw GradleException("Build failed with errors");
+			}
 		} finally {
 			try {
 				classLoader.close()
-			} catch (ignored: IOException) {
+			} catch (e: IOException) {
+				throw GradleException("Failed to close classloader", e);
 			}
 		}
 
 	}
 
+	private fun printProblem(problem: Problem)
+	{
+		val consumer = DefaultProblemTextConsumer();
+		problem.render(consumer);
+		log.error(" - " + consumer.getText());
+	}
 
 	private fun prepareClassLoader(): URLClassLoader {
 		try {
