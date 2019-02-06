@@ -132,7 +132,9 @@ open class TeaVMTask : DefaultTask() {
 	{
 		val consumer = DefaultProblemTextConsumer();
 		problem.render(consumer);
-		log.error(" - " + consumer.getText());
+		val location = problem.getLocation().getSourceLocation();
+		val filePath = location.getFileName() + ":" + location.getLine();
+		log.error("[" + filePath + "]: " + consumer.getText());
 	}
 
 	private fun prepareClassLoader(): URLClassLoader {
